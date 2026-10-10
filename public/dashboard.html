@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBoard - Project Board</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Questrial&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style type="text/tailwindcss">
+        @theme {
+            --color-primary: #4f46e5;
+            --color-primary-hover: #4338ca;
+            --color-primary-light: #eef2ff;
+            --color-purple: #9333ea;
+            --color-purple-hover: #7e22ce;
+            --color-purple-light: #f3e8ff;
+            --color-emerald: #059669;
+            --color-emerald-hover: #047857;
+            --color-emerald-light: #d1fae5;
+            --color-danger: #dc2626;
+            --color-danger-light: #fef2f2;
+            --font-sans: 'Inter', 'Questrial', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen text-gray-800">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white shadow-sm px-4 sm:px-6 py-3.5 flex justify-between items-center border-b border-gray-200 sticky top-0 z-30">
+        <div class="flex items-center space-x-6">
+            <a href="/dashboard.html" class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow">
+                    C
+                </div>
+                <span class="text-xl font-extrabold tracking-tight text-indigo-600">CampusBoard</span>
+            </a>
+
+            <!-- Desktop Central Navigation Links -->
+            <div class="hidden md:flex items-center space-x-1 desktop-nav-links">
+                <a href="/dashboard.html" class="nav-link-active">Board</a>
+                <a href="/analytics.html" id="navAnalyticsLink" class="nav-link hidden">Analytics</a>
+                <a href="/members.html" class="nav-link">Campus Directory</a>
+            </div>
+        </div>
+
+        <!-- Desktop User Profile & Logout -->
+        <div class="hidden md:flex items-center space-x-4 desktop-user-profile">
+            <span id="userRoleBadge" class="badge badge-gray"></span>
+            <span id="userName" class="text-sm font-medium text-gray-600"></span>
+            <button id="logoutBtn" class="btn-danger-light">Logout</button>
+        </div>
+
+        <!-- Mobile Hamburger Toggle Button -->
+        <button id="mobileMenuBtn" class="mobile-menu-btn md:hidden" aria-label="Toggle navigation menu">
+            <i class="bi bi-list"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobileNavDrawer" class="mobile-nav-drawer hidden md:hidden">
+        <div class="space-y-1">
+            <a href="/dashboard.html" class="mobile-nav-link-active"><i class="bi bi-kanban"></i> Board</a>
+            <a href="/analytics.html" id="mobileNavAnalyticsLink" class="mobile-nav-link hidden"><i class="bi bi-graph-up-arrow"></i> Analytics</a>
+            <a href="/members.html" class="mobile-nav-link"><i class="bi bi-people"></i> Campus Directory</a>
+        </div>
+        <div class="mobile-user-profile">
+            <div>
+                <p id="mobileUserName" class="text-sm font-semibold text-gray-900"></p>
+                <span id="mobileUserRoleBadge" class="badge badge-gray mt-1"></span>
+            </div>
+            <button id="mobileLogoutBtn" class="btn-danger-light text-xs py-1.5 px-3">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Grid Layout -->
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+        <!-- Left Column: Workspaces & Admin Operations -->
+        <section class="lg:col-span-1 space-y-6">
+
+            <!-- Create Workspace Card (Admin Only) -->
+            <div id="adminCreateWorkspaceCard" class="card border-indigo-100 hidden">
+                <h2 class="section-heading text-indigo-700">Create Project</h2>
+                <form id="createWorkspaceForm" class="space-y-3">
+                    <div>
+                        <label class="form-label-regular">Project Name</label>
+                        <input type="text" id="wsName" required class="form-input" placeholder="e.g. Smart Attendance System — Team 7">
+                    </div>
+                    <div>
+                        <label class="form-label-regular">Description</label>
+                        <textarea id="wsDesc" rows="2" class="form-textarea" placeholder="Goals & deliverables..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">
+                        + Create Project
+                    </button>
+                </form>
+            </div>
+
+            <!-- Workspaces List Card with Mobile Collapse -->
+            <div class="card">
+                <div class="flex items-center justify-between cursor-pointer md:cursor-default" id="mobileWsHeader">
+                    <h2 class="section-heading mb-0">Your Projects</h2>
+                    <button type="button" class="mobile-ws-toggle text-gray-500 hover:text-indigo-600 md:hidden text-xs font-semibold py-1 px-2 rounded bg-gray-100" id="toggleWsBtn">
+                        <span id="wsToggleText">Hide</span> <i class="bi bi-chevron-up ml-1" id="wsToggleIcon"></i>
+                    </button>
+                </div>
+                <div id="workspaceListContainer" class="mobile-ws-content mt-3 space-y-2">
+                    <div id="workspaceList" class="space-y-2">
+                        <p class="text-sm text-gray-500">Loading projects...</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Task Board & Actions -->
+        <section class="lg:col-span-3 space-y-6">
+
+            <!-- Workspace Header -->
+            <div class="card">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 id="currentWorkspaceTitle" class="page-heading">Select a Project</h1>
+                        <p id="currentWorkspaceDesc" class="page-subheading">Choose a project from the left to inspect its board.</p>
+                    </div>
+                    <div class="flex items-center space-x-2" id="workspaceActionButtons">
+                        <button id="openMemberModalBtn" class="btn btn-secondary btn-sm hidden">
+                            + Invite Member
+                        </button>
+                        <button id="openTaskFormBtn" class="btn btn-primary hidden">
+                            + Add Task
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Collapsible Member Invite Form -->
+                <div id="addMemberSection" class="hidden mt-4 pt-4 border-t border-gray-100">
+                    <form id="inviteMemberForm" class="flex gap-2">
+                        <input type="email" id="inviteEmail" required
+                            placeholder="Student email (e.g. rahul@student.campusboard.edu)..."
+                            class="form-input flex-1">
+                        <button type="submit" class="btn btn-primary">
+                            Invite
+                        </button>
+                    </form>
+                    <p id="inviteMsg" class="text-xs mt-2 hidden"></p>
+                </div>
+            </div>
+
+            <!-- Collapsible Task / Daily Work Form -->
+            <div id="addTaskSection" class="card hidden">
+                <h3 id="taskSectionHeader" class="section-heading mb-3">Create New Task</h3>
+                <form id="createTaskForm" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="text" id="taskTitle" placeholder="Task title / What did you work on today?" required
+                        class="form-input col-span-2">
+
+                    <select id="taskPriority" class="form-select">
+                        <option value="Low">Low Priority</option>
+                        <option value="Medium" selected>Medium Priority</option>
+                        <option value="High">High Priority</option>
+                    </select>
+
+                    <select id="taskStatus" class="form-select">
+                        <option value="To Do">Status: To Do</option>
+                        <option value="In Progress" selected>Status: In Progress</option>
+                        <option value="Under Review">Status: Under Review</option>
+                        <option value="Completed" id="taskStatusCompletedOpt">Status: Completed</option>
+                    </select>
+
+                    <div id="assigneeWrapper" class="col-span-1">
+                        <select id="taskAssignee" class="form-select">
+                            <option value="">Unassigned</option>
+                        </select>
+                    </div>
+
+                    <input type="url" id="taskRepoUrl" placeholder="GitHub / GitLab repository link (optional)" class="form-input col-span-2">
+                    <input type="url" id="taskDocUrl" placeholder="Report / document link (optional)" class="form-input col-span-2">
+
+                    <input type="text" id="taskDesc"
+                        placeholder="Brief summary of work / context / blockers (optional)..."
+                        class="form-input col-span-2">
+
+                    <button type="submit" id="submitTaskBtn" class="btn btn-primary col-span-1">
+                        Save Task
+                    </button>
+                </form>
+            </div>
+
+            <!-- Mobile Segmented Column Tabs (Visible on < 768px) -->
+            <div class="kanban-mobile-tabs" id="kanbanMobileTabs">
+                <button type="button" class="kanban-tab-btn active" data-tab="To Do">
+                    To Do <span id="tab-count-todo" class="kanban-tab-count">0</span>
+                </button>
+                <button type="button" class="kanban-tab-btn" data-tab="In Progress">
+                    In Progress <span id="tab-count-inprogress" class="kanban-tab-count">0</span>
+                </button>
+                <button type="button" class="kanban-tab-btn" data-tab="Under Review">
+                    Review <span id="tab-count-review" class="kanban-tab-count">0</span>
+                </button>
+                <button type="button" class="kanban-tab-btn" data-tab="Completed">
+                    Done <span id="tab-count-completed" class="kanban-tab-count">0</span>
+                </button>
+            </div>
+
+            <!-- Kanban Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 kanban-board-grid" id="kanbanBoard">
+
+                <!-- To Do Column -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 flex flex-col kanban-col mobile-active"
+                    data-status="To Do">
+                    <div class="flex items-center justify-between mb-3 px-1">
+                        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wider">To Do</h3>
+                        <span id="count-todo" class="badge badge-gray">0</span>
+                    </div>
+                    <div id="col-todo" class="space-y-3 min-h-[380px] transition-colors rounded-md p-1"></div>
+                </div>
+
+                <!-- In Progress Column -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 flex flex-col kanban-col"
+                    data-status="In Progress">
+                    <div class="flex items-center justify-between mb-3 px-1">
+                        <h3 class="text-xs font-bold text-indigo-700 uppercase tracking-wider">In Progress</h3>
+                        <span id="count-inprogress" class="badge badge-indigo">0</span>
+                    </div>
+                    <div id="col-inprogress" class="space-y-3 min-h-[380px] transition-colors rounded-md p-1"></div>
+                </div>
+
+                <!-- Under Review Column (submitted to faculty) -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 flex flex-col kanban-col"
+                    data-status="Under Review">
+                    <div class="flex items-center justify-between mb-3 px-1">
+                        <h3 class="text-xs font-bold text-amber-700 uppercase tracking-wider">Under Review</h3>
+                        <span id="count-review" class="badge badge-gray">0</span>
+                    </div>
+                    <div id="col-review" class="space-y-3 min-h-[380px] transition-colors rounded-md p-1"></div>
+                </div>
+
+                <!-- Completed Column -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 flex flex-col kanban-col"
+                    data-status="Completed">
+                    <div class="flex items-center justify-between mb-3 px-1">
+                        <h3 class="text-xs font-bold text-green-700 uppercase tracking-wider">Completed</h3>
+                        <span id="count-completed" class="badge badge-emerald">0</span>
+                    </div>
+                    <div id="col-completed" class="space-y-3 min-h-[380px] transition-colors rounded-md p-1"></div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Edit Task Modal (Admin Only) -->
+    <div id="editTaskModal" class="modal-backdrop hidden">
+        <div class="modal-box max-w-lg space-y-4">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Task Details</h3>
+                <button id="closeEditModalBtn" class="btn-close"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <form id="editTaskForm" class="space-y-4">
+                <input type="hidden" id="editTaskId">
+
+                <div>
+                    <label class="form-label">Title</label>
+                    <input type="text" id="editTaskTitle" required class="form-input">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="form-label">Priority</label>
+                        <select id="editTaskPriority" class="form-select">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Assignee</label>
+                        <select id="editTaskAssignee" class="form-select">
+                            <option value="">Unassigned</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Description</label>
+                    <textarea id="editTaskDesc" rows="3" class="form-textarea"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-2 border-t border-gray-100">
+                    <button type="button" id="cancelEditModalBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mobile Quick-Move Modal / Bottom Sheet -->
+    <div id="moveTaskModal" class="modal-backdrop hidden" aria-hidden="true" role="dialog">
+        <div class="modal-box move-sheet-box max-w-sm w-full space-y-4">
+            <div class="modal-header pb-2 border-b border-gray-100 flex items-center justify-between">
+                <div>
+                    <h3 class="modal-title text-base font-bold text-gray-900">Move Task</h3>
+                    <p id="moveTaskSubtitle" class="text-xs text-gray-500 truncate max-w-[220px] mt-0.5">Select destination column</p>
+                </div>
+                <button type="button" id="closeMoveModalBtn" class="btn-close" aria-label="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="moveTaskId">
+
+            <div class="space-y-2.5 py-1">
+                <button type="button" class="move-option-btn group w-full flex items-center justify-between p-3 rounded-lg border border-gray-200 hover:border-gray-400 bg-white transition duration-150" data-status="To Do">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-gray-400"></span>
+                        <span class="font-medium text-sm text-gray-800">To Do</span>
+                    </div>
+                    <span class="status-indicator-badge text-xs text-gray-400 group-hover:text-gray-700 flex items-center gap-1">
+                        <i class="bi bi-chevron-right text-xs"></i>
+                    </span>
+                </button>
+
+                <button type="button" class="move-option-btn group w-full flex items-center justify-between p-3 rounded-lg border border-indigo-200 hover:border-indigo-400 bg-white transition duration-150" data-status="In Progress">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
+                        <span class="font-medium text-sm text-gray-800">In Progress</span>
+                    </div>
+                    <span class="status-indicator-badge text-xs text-indigo-400 group-hover:text-indigo-700 flex items-center gap-1">
+                        <i class="bi bi-chevron-right text-xs"></i>
+                    </span>
+                </button>
+
+                <button type="button" class="move-option-btn group w-full flex items-center justify-between p-3 rounded-lg border border-amber-200 hover:border-amber-400 bg-white transition duration-150" data-status="Under Review">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                        <span class="font-medium text-sm text-gray-800">Under Review</span>
+                    </div>
+                    <span class="status-indicator-badge text-xs text-amber-400 group-hover:text-amber-700 flex items-center gap-1">
+                        <i class="bi bi-chevron-right text-xs"></i>
+                    </span>
+                </button>
+
+                <button type="button" class="move-option-btn group w-full flex items-center justify-between p-3 rounded-lg border border-emerald-200 hover:border-emerald-400 bg-white transition duration-150" data-status="Completed">
+                    <div class="flex items-center gap-3">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                        <span class="font-medium text-sm text-gray-800">Completed</span>
+                    </div>
+                    <span class="status-indicator-badge text-xs text-emerald-400 group-hover:text-emerald-700 flex items-center gap-1">
+                        <i class="bi bi-chevron-right text-xs"></i>
+                    </span>
+                </button>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100 flex justify-end">
+                <button type="button" id="cancelMoveModalBtn" class="btn btn-secondary w-full sm:w-auto">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Details Modal: links, faculty review & discussion -->
+    <div id="detailsModal" class="modal-backdrop hidden" role="dialog">
+        <div class="modal-box max-w-2xl w-full space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="modal-header">
+                <div class="min-w-0">
+                    <h3 id="detailsTitle" class="modal-title break-words">Task</h3>
+                    <p id="detailsMeta" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <button type="button" id="closeDetailsBtn" class="btn-close"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <p id="detailsDesc" class="text-sm text-gray-600 break-words"></p>
+
+            <!-- Repository & document links -->
+            <section class="space-y-2">
+                <h4 class="section-heading mb-0">Work Links</h4>
+                <div id="detailsLinks" class="flex flex-wrap gap-2 text-sm"></div>
+                <form id="linksForm" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <input type="url" id="linkRepo" class="form-input" placeholder="https://github.com/team/repo">
+                    <input type="url" id="linkDoc" class="form-input" placeholder="https://docs.google.com/...">
+                    <button type="submit" class="btn btn-secondary btn-sm sm:col-span-2">Save Links</button>
+                </form>
+            </section>
+
+            <!-- Faculty review -->
+            <section class="space-y-2 pt-3 border-t border-gray-100">
+                <h4 class="section-heading mb-0">Faculty Review</h4>
+                <div id="detailsReview" class="text-sm text-gray-700"></div>
+                <form id="reviewForm" class="hidden grid grid-cols-1 sm:grid-cols-4 gap-2">
+                    <input type="number" id="reviewGrade" min="0" max="100" required class="form-input" placeholder="Grade /100">
+                    <input type="text" id="reviewFeedback" class="form-input sm:col-span-3" placeholder="Feedback for the student">
+                    <button type="submit" class="btn btn-purple sm:col-span-4">Submit Grade &amp; Mark Completed</button>
+                </form>
+            </section>
+
+            <!-- Discussion -->
+            <section class="space-y-2 pt-3 border-t border-gray-100">
+                <h4 class="section-heading mb-0">Discussion</h4>
+                <div id="detailsComments" class="space-y-2 max-h-56 overflow-y-auto"></div>
+                <form id="commentForm" class="flex gap-2">
+                    <input type="text" id="commentText" required maxlength="1000" class="form-input flex-1" placeholder="Write a comment...">
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <script src="/js/navbar.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

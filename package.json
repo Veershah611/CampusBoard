@@ -1,0 +1,35 @@
+{
+  "name": "campusboard",
+  "version": "1.0.0",
+  "description": "CampusBoard: an open-source, role-based collaborative workspace for academic projects (Node.js, Express, MongoDB).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "seed": "node seedData.js",
+    "seed:admin": "node seedAdmin.js",
+    "test": "echo \"No automated tests yet\" && exit 0"
+  },
+  "keywords": [
+    "open-source",
+    "education",
+    "kanban",
+    "project-management",
+    "nodejs",
+    "express",
+    "mongodb",
+    "rbac"
+  ],
+  "author": "[Your Team Name]",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.1"
+  }
+}

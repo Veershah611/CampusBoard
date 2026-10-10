@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBoard — Academic Analytics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Questrial&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style type="text/tailwindcss">
+        @theme {
+            --color-primary: #4f46e5;
+            --color-primary-hover: #4338ca;
+            --color-primary-light: #eef2ff;
+            --color-purple: #9333ea;
+            --color-purple-hover: #7e22ce;
+            --color-purple-light: #f3e8ff;
+            --color-emerald: #059669;
+            --color-emerald-hover: #047857;
+            --color-emerald-light: #d1fae5;
+            --color-danger: #dc2626;
+            --color-danger-light: #fef2f2;
+            --font-sans: 'Inter', 'Questrial', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white shadow-sm px-4 sm:px-6 py-3.5 flex justify-between items-center border-b border-gray-200 sticky top-0 z-30">
+        <div class="flex items-center space-x-6">
+            <a href="/dashboard.html" class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow">
+                    C
+                </div>
+                <span class="text-xl font-extrabold tracking-tight text-indigo-600">CampusBoard</span>
+            </a>
+
+            <!-- Desktop Central Navigation Links -->
+            <div class="hidden md:flex items-center space-x-1 desktop-nav-links">
+                <a href="/dashboard.html" class="nav-link">Board</a>
+                <a href="/analytics.html" class="nav-link-active">Analytics</a>
+                <a href="/members.html" class="nav-link">Campus Directory</a>
+            </div>
+        </div>
+
+        <!-- Desktop User Role & Session -->
+        <div class="hidden md:flex items-center space-x-4 desktop-user-profile">
+            <span id="userRoleBadge" class="badge badge-gray"></span>
+            <span id="userName" class="text-sm font-medium text-gray-700"></span>
+            <button id="logoutBtn" class="btn-danger-light">Logout</button>
+        </div>
+
+        <!-- Mobile Hamburger Toggle Button -->
+        <button id="mobileMenuBtn" class="mobile-menu-btn md:hidden" aria-label="Toggle navigation menu">
+            <i class="bi bi-list"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobileNavDrawer" class="mobile-nav-drawer hidden md:hidden">
+        <div class="space-y-1">
+            <a href="/dashboard.html" class="mobile-nav-link"><i class="bi bi-kanban"></i> Board</a>
+            <a href="/analytics.html" id="mobileNavAnalyticsLink" class="mobile-nav-link-active"><i class="bi bi-graph-up-arrow"></i> Analytics</a>
+            <a href="/members.html" class="mobile-nav-link"><i class="bi bi-people"></i> Campus Directory</a>
+        </div>
+        <div class="mobile-user-profile">
+            <div>
+                <p id="mobileUserName" class="text-sm font-semibold text-gray-900"></p>
+                <span id="mobileUserRoleBadge" class="badge badge-gray mt-1"></span>
+            </div>
+            <button id="mobileLogoutBtn" class="btn-danger-light text-xs py-1.5 px-3">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 space-y-6 flex-1 w-full">
+
+        <!-- Top Header & Filter Controls -->
+        <div class="card flex flex-col md:flex-row md:items-center justify-between gap-4 analytics-header-actions">
+            <div>
+                <h1 class="page-heading">Academic Progress & Grading Analytics</h1>
+                <p class="page-subheading">Project progress, review queue, student workload, and grades.</p>
+            </div>
+
+            <!-- Workspace Scope Selector -->
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div class="flex items-center space-x-2">
+                    <label for="workspaceFilter" class="form-label mb-0 text-sm whitespace-nowrap">Scope:</label>
+                    <select id="workspaceFilter" class="form-select w-full sm:w-auto shadow-sm">
+                        <option value="ALL">All Projects Combined</option>
+                    </select>
+                </div>
+                <button id="refreshBtn" class="btn btn-secondary btn-sm flex items-center justify-center gap-1.5 w-full sm:w-auto">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- KPI Summary Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 analytics-kpi-grid">
+            <!-- Card 1: Total Tasks -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="section-heading mb-0">Total Tasks</span>
+                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold"><i class="bi bi-clipboard-check text-base"></i></span>
+                </div>
+                <div class="text-2xl font-extrabold text-gray-900" id="kpiTotalTasks">0</div>
+                <p class="text-xs text-gray-500 mt-1" id="kpiTotalTasksSub">Average grade: —</p>
+            </div>
+
+            <!-- Card 2: Completion Rate -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="section-heading mb-0">Completion Rate</span>
+                    <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold"><i class="bi bi-check2-circle text-base"></i></span>
+                </div>
+                <div class="flex items-baseline space-x-2">
+                    <div class="text-2xl font-extrabold text-emerald-600" id="kpiCompletionRate">0%</div>
+                    <span class="text-xs text-gray-500" id="kpiCompletionCount">(0 of 0)</span>
+                </div>
+                <!-- Mini Progress Bar -->
+                <div class="w-full bg-gray-100 rounded-full h-1.5 mt-2 overflow-hidden">
+                    <div id="kpiProgressBar" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Card 3: Active Work / In Progress -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="section-heading mb-0">Awaiting Review</span>
+                    <span class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold"><i class="bi bi-lightning-charge-fill text-base"></i></span>
+                </div>
+                <div class="text-2xl font-extrabold text-indigo-600" id="kpiInProgress">0</div>
+                <p class="text-xs text-gray-500 mt-1">Submitted, not yet graded</p>
+            </div>
+
+            <!-- Card 4: High Priority Blockers -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="section-heading mb-0">High Priority Open</span>
+                    <span class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold"><i class="bi bi-fire text-base"></i></span>
+                </div>
+                <div class="text-2xl font-extrabold text-red-600" id="kpiHighPriority">0</div>
+                <p class="text-xs text-gray-500 mt-1" id="kpiHighPrioritySub">Pending urgent items</p>
+            </div>
+        </div>
+
+        <!-- Charts Grid (2x2) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Chart 1: Status Doughnut -->
+            <div class="card flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Workflow Stage Distribution</h2>
+                    <span class="text-xs text-gray-400">Status Ratio</span>
+                </div>
+                <div class="h-64 relative flex items-center justify-center">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Workload by Team Member -->
+            <div class="card flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Student Workload Balance</h2>
+                    <span class="text-xs text-gray-400">Tasks per Assignee</span>
+                </div>
+                <div class="h-64 relative">
+                    <canvas id="workloadChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 3: Priority Hierarchy -->
+            <div class="card flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Priority Distribution</h2>
+                    <span class="text-xs text-gray-400">High / Med / Low</span>
+                </div>
+                <div class="h-64 relative">
+                    <canvas id="priorityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 4: Velocity & Timeline -->
+            <div class="card flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Weekly Submission Activity</h2>
+                    <span class="text-xs text-gray-400">Past 7 Days Trend</span>
+                </div>
+                <div class="h-64 relative">
+                    <canvas id="velocityChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actionable Intelligence Tables -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- High Priority / Bottlenecks Table -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Critical Tasks Needing Attention</h3>
+                    <span class="badge badge-red" id="criticalBadge">0 Open</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-gray-50 text-gray-500 font-semibold border-b border-gray-100 uppercase">
+                            <tr>
+                                <th class="p-2.5">Task Title</th>
+                                <th class="p-2.5">Project</th>
+                                <th class="p-2.5">Assignee</th>
+                                <th class="p-2.5">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="criticalTasksBody" class="divide-y divide-gray-100">
+                            <tr>
+                                <td colspan="4" class="p-4 text-center text-gray-400">Loading critical tasks...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Team Throughput Leaderboard -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider">Student Performance</h3>
+                    <span class="text-xs text-gray-400">Completion Stats</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-gray-50 text-gray-500 font-semibold border-b border-gray-100 uppercase">
+                            <tr>
+                                <th class="p-2.5">Student</th>
+                                <th class="p-2.5">Assigned</th>
+                                <th class="p-2.5">Completed</th>
+                                <th class="p-2.5">Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody" class="divide-y divide-gray-100">
+                            <tr>
+                                <td colspan="4" class="p-4 text-center text-gray-400">Calculating member throughput...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4 px-6 text-center text-xs text-gray-500">
+        CampusBoard &bull; Open-source academic project workspace
+    </footer>
+
+    <script src="/js/navbar.js"></script>
+    <script src="/js/analytics.js"></script>
+</body>
+
+</html>
