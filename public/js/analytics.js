@@ -1,4 +1,5 @@
 // CampusBoard Analytics Engine
+if (window.Chart) { Chart.defaults.font.family = "'Century Gothic', 'Questrial', sans-serif"; Chart.defaults.color = '#353b52'; }
 const token = localStorage.getItem('token');
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
@@ -165,7 +166,7 @@ function renderStatusChart(tasks) {
             labels: ['To Do', 'In Progress', 'Under Review', 'Completed'],
             datasets: [{
                 data: [todoCount, inProgCount, reviewCount, completedCount],
-                backgroundColor: ['#94a3b8', '#6366f1', '#f59e0b', '#10b981'],
+                backgroundColor: ['#c2c19f', '#4ab7e0', '#e2d64b', '#84ac64'],
                 borderWidth: 2,
                 borderColor: '#ffffff',
                 hoverOffset: 6
@@ -177,7 +178,7 @@ function renderStatusChart(tasks) {
             plugins: {
                 legend: {
                     position: 'bottom',
-                    labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } }
+                    labels: { boxWidth: 12, font: { size: 12 } }
                 }
             },
             cutout: '68%'
@@ -221,25 +222,25 @@ function renderWorkloadChart(tasks) {
                 {
                     label: 'Completed',
                     data: completedData,
-                    backgroundColor: '#10b981',
+                    backgroundColor: '#84ac64',
                     borderRadius: 4
                 },
                 {
                     label: 'Under Review',
                     data: members.map(m => memberMap[m].review),
-                    backgroundColor: '#f59e0b',
+                    backgroundColor: '#e2d64b',
                     borderRadius: 4
                 },
                 {
                     label: 'In Progress',
                     data: inprogData,
-                    backgroundColor: '#6366f1',
+                    backgroundColor: '#4ab7e0',
                     borderRadius: 4
                 },
                 {
                     label: 'To Do',
                     data: todoData,
-                    backgroundColor: '#cbd5e1',
+                    backgroundColor: '#c2c19f',
                     borderRadius: 4
                 }
             ]
@@ -275,7 +276,7 @@ function renderPriorityChart(tasks) {
             datasets: [{
                 label: 'Tasks Count',
                 data: [high, med, low],
-                backgroundColor: ['#ef4444', '#f59e0b', '#38bdf8'],
+                backgroundColor: ['#0d173b', '#e2d64b', '#4ab7e0'],
                 borderRadius: 6,
                 maxBarThickness: 45
             }]
@@ -287,7 +288,7 @@ function renderPriorityChart(tasks) {
                 legend: { display: false }
             },
             scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+                y: { beginAtZero: true, grid: { color: '#efeee4' }, ticks: { stepSize: 1 } },
                 x: { grid: { display: false } }
             }
         }
@@ -334,8 +335,8 @@ function renderVelocityChart(tasks) {
                 {
                     label: 'Tasks Created',
                     data: createdCounts,
-                    borderColor: '#6366f1',
-                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    borderColor: '#4ab7e0',
+                    backgroundColor: 'rgba(74, 183, 224, 0.15)',
                     fill: true,
                     tension: 0.35,
                     borderWidth: 2,
@@ -344,8 +345,8 @@ function renderVelocityChart(tasks) {
                 {
                     label: 'Tasks Completed',
                     data: completedCounts,
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderColor: '#84ac64',
+                    backgroundColor: 'rgba(132, 172, 100, 0.15)',
                     fill: true,
                     tension: 0.35,
                     borderWidth: 2,
@@ -360,7 +361,7 @@ function renderVelocityChart(tasks) {
                 legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
             },
             scales: {
-                y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+                y: { beginAtZero: true, grid: { color: '#efeee4' }, ticks: { stepSize: 1 } },
                 x: { grid: { display: false } }
             }
         }

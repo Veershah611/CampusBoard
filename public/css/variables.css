@@ -1,36 +1,46 @@
 /* ==========================================================================
    Design Tokens & Theme Variables
    Shared CSS Variables across CampusBoard Stylesheets & Tailwind Theme
+   Palette: #e2d64b (sun) · #4ab7e0 (sky) · #0d173b (navy)
+            #84ac64 (leaf) · #c2c19f (sand) · #2d6668 (teal)
    ========================================================================== */
 
 :root {
-  /* Brand / Primary (Indigo) */
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-light: #eef2ff;
-  --color-primary-focus: rgba(99, 102, 241, 0.2);
+  /* Raw palette */
+  --cb-sun: #e2d64b;
+  --cb-sky: #4ab7e0;
+  --cb-navy: #0d173b;
+  --cb-leaf: #84ac64;
+  --cb-sand: #c2c19f;
+  --cb-teal: #2d6668;
 
-  /* Purple (Admin) */
-  --color-purple: #9333ea;
-  --color-purple-hover: #7e22ce;
-  --color-purple-light: #f3e8ff;
-  --color-purple-focus: rgba(168, 85, 247, 0.2);
+  /* Brand / Primary (Navy → Teal) */
+  --color-primary: #0d173b;
+  --color-primary-hover: #2d6668;
+  --color-primary-light: #e6f4fa;
+  --color-primary-focus: rgba(74, 183, 224, 0.35);
 
-  /* Emerald (Student / Success) */
-  --color-emerald: #059669;
-  --color-emerald-hover: #047857;
-  --color-emerald-light: #d1fae5;
+  /* Teal (Faculty / Admin) */
+  --color-purple: #2d6668;
+  --color-purple-hover: #234f51;
+  --color-purple-light: #e3eeee;
+  --color-purple-focus: rgba(45, 102, 104, 0.25);
+
+  /* Leaf green (Student / Success) */
+  --color-emerald: #84ac64;
+  --color-emerald-hover: #6a904d;
+  --color-emerald-light: #e8f0df;
 
   /* Red / Danger */
-  --color-danger: #dc2626;
-  --color-danger-light: #fef2f2;
-  --color-danger-border: #fee2e2;
+  --color-danger: #c2412d;
+  --color-danger-light: #fbeeeb;
+  --color-danger-border: #f5d6cf;
 
-  /* Neutrals & Borders */
-  --color-border: #e5e7eb;
-  --color-border-input: #d1d5db;
-  --color-bg-subtle: #f9fafb;
+  /* Neutrals & Borders (sand-tinted) */
+  --color-border: #e3e2d2;
+  --color-border-input: #d0cfb8;
+  --color-bg-subtle: #f8f8f3;
 
   /* Typography */
-  --font-sans: 'Inter', 'Questrial', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Century Gothic', 'CenturyGothic', 'AppleGothic', 'Questrial', system-ui, sans-serif;
 }

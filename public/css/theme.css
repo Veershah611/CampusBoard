@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Brand Skin
+   Navy navbar, sand-tinted canvas, accent strips and the sign-in hero
+   ========================================================================== */
+
+body {
+  background-color: #f3f2ea;
+  background-image:
+    radial-gradient(circle at 0% 0%, rgba(74, 183, 224, 0.10), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(226, 214, 75, 0.12), transparent 40%);
+  background-attachment: fixed;
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: var(--cb-sun);
+  color: var(--cb-navy);
+}
+
+/* --------------------------------------------------------------------------
+   Navbar
+   -------------------------------------------------------------------------- */
+.app-navbar {
+  background: linear-gradient(100deg, var(--cb-navy) 0%, #142456 60%, var(--cb-teal) 100%);
+  border-bottom: 3px solid var(--cb-sun);
+  box-shadow: 0 6px 20px -8px rgba(13, 23, 59, 0.55);
+}
+
+.app-navbar .app-logo-mark {
+  background: var(--cb-sun);
+  color: var(--cb-navy);
+  border-radius: 0.6rem;
+  transform: rotate(-6deg);
+  box-shadow: 0 4px 12px -2px rgba(226, 214, 75, 0.5);
+}
+
+.app-navbar .app-logo-text {
+  color: #ffffff;
+  letter-spacing: 0.02em;
+}
+
+.app-navbar .app-logo-text b {
+  color: var(--cb-sky);
+  font-weight: 800;
+}
+
+.app-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.app-navbar .nav-link:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.10);
+}
+
+.app-navbar .nav-link-active {
+  color: var(--cb-navy);
+  background-color: var(--cb-sun);
+}
+
+.app-navbar #userName {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.app-navbar .btn-danger-light {
+  background-color: rgba(255, 255, 255, 0.10);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.app-navbar .btn-danger-light:hover {
+  background-color: #c2412d;
+  border-color: #c2412d;
+}
+
+.app-navbar .mobile-menu-btn {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   Cards & headings
+   -------------------------------------------------------------------------- */
+.card,
+.card-sm {
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(13, 23, 59, 0.04), 0 8px 24px -12px rgba(13, 23, 59, 0.18);
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.section-heading {
+  color: var(--cb-teal);
+  letter-spacing: 0.12em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-heading::before {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 2px;
+  background: var(--cb-sun);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.page-heading {
+  color: var(--cb-navy);
+}
+
+.btn {
+  border-radius: 0.65rem;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:hover,
+.btn-purple:hover,
+.btn-emerald:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -6px rgba(13, 23, 59, 0.45);
+}
+
+.btn-emerald {
+  color: var(--cb-navy);
+}
+
+/* --------------------------------------------------------------------------
+   Kanban columns: a colour strip per stage
+   -------------------------------------------------------------------------- */
+.kanban-col {
+  background-color: rgba(255, 255, 255, 0.55) !important;
+  border-top-width: 4px !important;
+  border-radius: 0.9rem !important;
+}
+
+.kanban-col[data-status="To Do"] { border-top-color: var(--cb-sand) !important; }
+.kanban-col[data-status="In Progress"] { border-top-color: var(--cb-sky) !important; }
+.kanban-col[data-status="Under Review"] { border-top-color: var(--cb-sun) !important; }
+.kanban-col[data-status="Completed"] { border-top-color: var(--cb-leaf) !important; }
+
+/* --------------------------------------------------------------------------
+   Sign-in hero
+   -------------------------------------------------------------------------- */
+.signin-hero {
+  background-color: var(--cb-navy);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(74, 183, 224, 0.45), transparent 35%),
+    radial-gradient(circle at 85% 15%, rgba(226, 214, 75, 0.35), transparent 30%),
+    radial-gradient(circle at 80% 85%, rgba(132, 172, 100, 0.40), transparent 35%),
+    radial-gradient(circle at 10% 90%, rgba(45, 102, 104, 0.70), transparent 40%);
+}
+
+.signin-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-top: 5px solid var(--cb-sun);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.55);
+}
+
+.signin-logo {
+  background: var(--cb-navy);
+  color: var(--cb-sun);
+  transform: rotate(-6deg);
+}
+
+.signin-palette {
+  display: flex;
+  height: 4px;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.signin-palette span { flex: 1; }
+
+/* Leave room for the leading search icon */
+.form-input.pl-9 {
+  padding-left: 2.25rem;
+}
