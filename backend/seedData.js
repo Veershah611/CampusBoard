@@ -24,14 +24,14 @@ async function seedData() {
     await User.deleteMany({});
 
     // 2. Users: one faculty guide + six students
-    const faculty = await User.create({ name: 'Dr. Meera Iyer', email: 'meera.iyer@faculty.campusboard.edu', password: FACULTY_PASSWORD, role: 'Admin' });
+    const faculty = await User.create({ name: 'Dr. Meera Iyer', email: 'meera@faculty.campusboard.edu', password: FACULTY_PASSWORD, role: 'Admin' });
     const student = (name, email) => User.create({ name, email, password: STUDENT_PASSWORD, role: 'Member' });
-    const aarav = await student('Aarav Mehta', 'aarav.mehta@student.campusboard.edu');
-    const diya = await student('Diya Shah', 'diya.shah@student.campusboard.edu');
-    const kabir = await student('Kabir Joshi', 'kabir.joshi@student.campusboard.edu');
-    const isha = await student('Isha Nair', 'isha.nair@student.campusboard.edu');
-    const rohan = await student('Rohan Desai', 'rohan.desai@student.campusboard.edu');
-    const sneha = await student('Sneha Kulkarni', 'sneha.kulkarni@student.campusboard.edu');
+    const aarav = await student('Aarav Mehta', 'aarav@student.campusboard.edu');
+    const diya = await student('Diya Shah', 'diya@student.campusboard.edu');
+    const kabir = await student('Kabir Joshi', 'kabir@student.campusboard.edu');
+    const isha = await student('Isha Nair', 'isha@student.campusboard.edu');
+    const rohan = await student('Rohan Desai', 'rohan@student.campusboard.edu');
+    const sneha = await student('Sneha Kulkarni', 'sneha@student.campusboard.edu');
     console.log('Seeded 1 faculty member and 6 students.');
 
     // 3. Projects (stored in the "workspaces" collection)
@@ -99,9 +99,9 @@ async function seedData() {
 
     console.log('\n=============================================');
     console.log('--- CAMPUSBOARD SEEDING COMPLETE ---');
-    console.log(`Faculty:  meera.iyer@faculty.campusboard.edu  /  ${FACULTY_PASSWORD}`);
+    console.log(`Faculty:  meera@faculty.campusboard.edu  /  ${FACULTY_PASSWORD}`);
     console.log(`Students (password for all: ${STUDENT_PASSWORD}):`);
-    console.log('  aarav.mehta, diya.shah, kabir.joshi, isha.nair, rohan.desai, sneha.kulkarni  @student.campusboard.edu');
+    console.log('  aarav, diya, kabir, isha, rohan, sneha  @student.campusboard.edu');
     console.log('=============================================\n');
 
     process.exit(0);
