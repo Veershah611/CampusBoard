@@ -109,28 +109,37 @@ stateDiagram-v2
 
 ## Getting started
 
-### Option A: Node.js + MongoDB
+### Prerequisites
+- Node.js (>= 18)
+- MongoDB (running locally or a MongoDB Atlas URI)
+
+### Setup & Run
 
 ```bash
+# 1. Navigate to the backend directory
+cd backend
+
+# 2. Install dependencies
 npm install
-cp .env.example .env        # then edit the values
-npm run seed                # optional demo data (wipes the database first)
-npm start                   # http://localhost:5000
+
+# 3. Configure environment variables
+cp .env.example .env        # edit values if needed (PORT=5050 or PORT=5000)
+
+# 4. Populate demo data (optional, wipes existing collections first)
+npm run seed
+
+# 5. Start the development server
+npm run dev                 # or: npm start
 ```
 
-### Option B: Docker
-
-```bash
-docker compose up --build   # app on http://localhost:5000 with its own MongoDB
-docker compose exec app npm run seed   # optional demo data
-```
+Visit **`http://localhost:5050`** (or your configured `PORT`) in your browser. It will automatically redirect to the Sign In page.
 
 ### Demo accounts (after `npm run seed`)
 
 | Role | E-mail | Password |
 | :--- | :--- | :--- |
-| Faculty | `meera.iyer@faculty.campusboard.edu` | `FacultyPass123!` |
-| Student | `aarav.mehta@student.campusboard.edu` (and 5 others) | `StudentPass123!` |
+| Faculty | `meera@faculty.campusboard.edu` | `FacultyPass123!` |
+| Student | `aarav@student.campusboard.edu` (and 5 others: `diya`, `kabir`, `isha`, `rohan`, `sneha`) | `StudentPass123!` |
 
 > These are demo credentials for local use only. Change `JWT_SECRET` and the root password before deploying.
 
@@ -140,15 +149,24 @@ docker compose exec app npm run seed   # optional demo data
 
 ```text
 campusboard/
-├── config/db.js            # MongoDB connection helper
-├── middleware/auth.js      # JWT authentication & role authorization
-├── models/                 # User, Workspace (project), Task (+ comments, links, grade)
-├── routes/                 # authRoutes, workspaceRoutes, taskRoutes
-├── public/                 # signin, dashboard (board), analytics, members (directory)
-├── seedData.js / seedAdmin.js
-├── server.js               # entry point, static hosting, root faculty bootstrap
-├── Dockerfile · docker-compose.yml
-└── LICENSE · CONTRIBUTING.md · CODE_OF_CONDUCT.md
+├── backend/
+│   ├── config/db.js            # MongoDB connection helper
+│   ├── middleware/auth.js      # JWT authentication & role authorization
+│   ├── models/                 # User, Workspace (project), Task (+ comments, links, grade)
+│   ├── routes/                 # authRoutes, workspaceRoutes, taskRoutes
+│   ├── seedData.js             # Demo data seeder
+│   ├── seedAdmin.js            # Root faculty admin seeder
+│   ├── server.js               # Express entry point & static frontend hosting
+│   ├── package.json
+│   └── .env.example
+├── frontend/                   # Client-side UI & static assets
+│   ├── css/                    # Stylesheets, theme, variables
+│   ├── js/                     # Client application scripts (dashboard, analytics, etc.)
+│   ├── signin.html             # Login portal
+│   ├── dashboard.html          # Kanban workspace board
+│   ├── analytics.html          # Performance & progress metrics
+│   └── members.html            # Campus member directory
+└── LICENSE · CONTRIBUTING.md · CODE_OF_CONDUCT.md · README.md
 ```
 
 ## Contributing
