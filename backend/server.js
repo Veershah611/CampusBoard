@@ -13,7 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static frontend from public directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 
 // Root route redirect to Campus Sign In
 app.get('/', (req, res) => {
